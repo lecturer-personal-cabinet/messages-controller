@@ -1,4 +1,4 @@
-FROM openjdk:12-alpine
+FROM openjdk:8-alpine
 
 RUN apk add unzip
 RUN apk add bash
