@@ -1,6 +1,6 @@
 package com.lpc.wiring
 
-import com.lpc.controller.ChatController
+import com.lpc.controllers.DialogController
 import com.softwaremill.macwire.wire
 import controllers.AssetsComponents
 import play.api.ApplicationLoader.Context
@@ -9,6 +9,8 @@ import play.api.routing.Router
 import play.api.{Application, ApplicationLoader, BuiltInComponentsFromContext, LoggerConfigurator}
 import play.filters.HttpFiltersComponents
 import router.Routes
+
+import scala.concurrent.ExecutionContext
 
 class LpcApplicationLoader extends ApplicationLoader {
   override def load(context: ApplicationLoader.Context): Application = new LpcComponent(context).application
@@ -28,5 +30,6 @@ class LpcComponent (context: Context) extends BuiltInComponentsFromContext(conte
     wire[Routes]
   }
 
-  lazy val ChatController: ChatController = wire[ChatController]
+  override implicit val ex: ExecutionContext = ExecutionContext.global
+  lazy val ChatController: DialogController = wire[DialogController]
 }

@@ -1,1 +1,1 @@
-GET     /chat     com.lpc.controller.ChatController.accept
+GET                 /                           com.lpc.controllers.DialogController.accept

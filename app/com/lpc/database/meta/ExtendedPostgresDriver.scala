@@ -1,9 +1,9 @@
-package com.lpc.db
+package com.lpc.database.meta
 
-import com.github.tminglei.slickpg._
 import com.github.tminglei.slickpg.agg.PgAggFuncSupport
 import com.github.tminglei.slickpg.trgm.PgTrgmSupport
 import com.github.tminglei.slickpg.window.PgWindowFuncSupport
+import com.github.tminglei.slickpg.{ExPostgresProfile, PgArraySupport, PgEnumSupport, PgPlayJsonSupport}
 
 trait ExtendedPostgresDriver extends ExPostgresProfile
   with PgArraySupport

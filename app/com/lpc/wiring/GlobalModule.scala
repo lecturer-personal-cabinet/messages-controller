@@ -1,29 +1,27 @@
 package com.lpc.wiring
 
 import akka.actor.ActorSystem
-import cats.effect.{ContextShift, IO}
-import com.lpc.actors.chat.{LookupBus, LookupBusImpl}
-import com.lpc.db.SlickDatabaseManager
-import com.lpc.db.dao.{DialogDaoImpl, DialogMessageDaoImpl}
-import com.lpc.services.dialog.DialogServiceImpl
-import com.lpc.services.messages.DialogMessageServiceImpl
+import com.lpc.actors.meta.UsersEventBus
+import com.lpc.database.repository.{DefaultDialogMessageRepository, DefaultDialogParticipantRepository, DefaultDialogRepository, DialogMessageRepository, DialogParticipantRepository, DialogRepository}
+import com.lpc.services.messages.{DefaultMessagesService, MessagesService}
 import play.api.db.slick.{DbName, SlickComponents}
-import slick.dbio.DBIO
-import slick.jdbc.JdbcProfile
+import slick.jdbc.{JdbcBackend, JdbcProfile}
+
+import scala.concurrent.ExecutionContext
 
 trait GlobalModule extends SlickComponents {
   import com.softwaremill.macwire._
 
-  implicit val system: ActorSystem = ActorSystem()
-  implicit val cs: ContextShift[IO] = IO.contextShift(executionContext)
+  implicit val system: ActorSystem = ActorSystem("actor-system")
+  implicit val ex: ExecutionContext = ExecutionContext.global
 
-  lazy val dbConfig = slickApi.dbConfig[JdbcProfile](DbName("default"))
-  lazy val DatabaseManager: SlickDatabaseManager[IO, DBIO] = wire[SlickDatabaseManager[IO, DBIO]]
+  lazy val Database: JdbcBackend#Database = slickApi.dbConfig[JdbcProfile](DbName("default")).db
 
-  lazy val DialogDao: DialogDaoImpl = wire[DialogDaoImpl]
-  lazy val DialogMessageDao: DialogMessageDaoImpl = wire[DialogMessageDaoImpl]
+  lazy val DialogMessageRepository: DialogMessageRepository = wire[DefaultDialogMessageRepository]
+  lazy val DialogParticipantRepository: DialogParticipantRepository = wire[DefaultDialogParticipantRepository]
+  lazy val DialogRepository: DialogRepository = wire[DefaultDialogRepository]
 
-  lazy val LookupBus: LookupBus = wire[LookupBusImpl]
-  lazy val DialogService: DialogServiceImpl[IO, DBIO] = wire[DialogServiceImpl[IO, DBIO]]
-  lazy val DialogMessageService: DialogMessageServiceImpl[IO, DBIO] = wire[DialogMessageServiceImpl[IO, DBIO]]
+  lazy val MessagesService: MessagesService = wire[DefaultMessagesService]
+
+  lazy val DialogLookupBus: UsersEventBus = wire[UsersEventBus]
 }
