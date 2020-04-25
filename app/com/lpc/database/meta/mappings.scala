@@ -7,7 +7,7 @@ package object mappings {
 
   class DialogTable(tag: Tag) extends Table[DialogEntity](tag, "dialog") {
     def id = column[Option[String]]("id", O.PrimaryKey)
-    def name = column[Option[String]]("content")
+    def name = column[Option[String]]("name")
 
     def * = (id, name) <> (DialogEntity.tupled, DialogEntity.unapply)
   }
@@ -25,7 +25,8 @@ package object mappings {
     def dialogId = column[String]("dialog_id")
     def createdTs = column[Option[Timestamp]]("created_ts")
     def content = column[String]("content")
+    def senderId = column[String]("sender_id")
 
-    def * = (id, dialogId, createdTs, content) <> (DialogMessageEntity.tupled, DialogMessageEntity.unapply)
+    def * = (id, dialogId, createdTs, content, senderId) <> (DialogMessageEntity.tupled, DialogMessageEntity.unapply)
   }
 }

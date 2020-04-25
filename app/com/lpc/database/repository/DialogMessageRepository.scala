@@ -19,10 +19,11 @@ class DefaultDialogMessageRepository @Inject()(db: JdbcBackend#Database)(implici
   import com.lpc.database.meta.Tables._
 
   override def upsert(entity: DialogMessageEntity): Future[DialogMessageEntity] = {
+    println(s"Entity: ${entity}")
     val query = DialogMessageTable
-      .map(t => (t.content, t.dialogId))
+      .map(t => (t.content, t.dialogId, t.senderId))
       .returning(DialogMessageTable.map(_.id))
-      .+=((entity.content, entity.dialogId))
+      .+=((entity.content, entity.dialogId, entity.senderId))
 
     db.run(query).map(id => entity.copy(id = id))
   }

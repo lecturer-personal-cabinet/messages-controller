@@ -12,6 +12,11 @@ package object actors {
     def userId: String
   }
 
+  case class SocketRequest(
+    userId: String,
+    data: JsValue,
+    eventType: String)
+
   case class JoinChannelEvent(userId: String) extends MessageEventIn
 
   case class SendNotificationEvent(
@@ -19,13 +24,22 @@ package object actors {
     receivers: Seq[String],
     content: String) extends MessageEventIn
 
+  case class SendMessageEvent(
+     userId: String,
+     receivers: Seq[String],
+     content: String) extends MessageEventIn
+
   case class NotificationEvent(
     userId: String,
     content: String,
     eventType: String = "notification-event") extends MessageEventOut
 
-  case class SocketRequest(
-    userId: String,
-    data: JsValue,
-    eventType: String)
+  case class MessageSentEvent(
+     userId: String,
+     eventType: String = "message-sent") extends MessageEventOut
+
+  case class MessageReceivedEvent(
+     userId: String,
+     message: String,
+     eventType: String = "message-received") extends MessageEventOut
 }

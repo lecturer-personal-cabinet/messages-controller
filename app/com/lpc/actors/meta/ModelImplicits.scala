@@ -11,6 +11,9 @@ object ModelImplicits {
   implicit val joinEventFormat: Format[JoinChannelEvent] = Json.format
   implicit val sendNotificationEventFormat: Format[SendNotificationEvent] = Json.format
   implicit val notificationEventFormat: Format[NotificationEvent] = Json.format
+  implicit val sendMessageEventFormat: Format[SendMessageEvent] = Json.format
+  implicit val messageSentEventFmt: Format[MessageSentEvent] = Json.format
+  implicit val messageReceivedEventFmt: Format[MessageReceivedEvent] = Json.format
 
   implicit val flowJoinTransformer: MessageFlowTransformer[SocketRequest, MessageEventOut] =
     MessageFlowTransformer.jsonMessageFlowTransformer[SocketRequest, MessageEventOut]
