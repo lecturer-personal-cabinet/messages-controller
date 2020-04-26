@@ -80,7 +80,7 @@ class UserManagementActor(out: ActorRef,
         createdTs = Option(LocalDateTime.now()),
         content = msg.content,
         senderId = msg.userId,
-        isRead = msg.isRead))
+        isRead = false))
       _ = msg.receivers
         .map(uid => MessageReceivedEvent(userId = uid, message = messageResult))
         .foreach(event => ParticipantsStorage.publish(event, event.userId))

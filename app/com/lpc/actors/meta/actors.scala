@@ -28,7 +28,6 @@ package object actors {
   case class SendMessageEvent(
      userId: String,
      receivers: Seq[String],
-     isRead: Boolean,
      content: String) extends MessageEventIn
 
   case class NotificationEvent(
