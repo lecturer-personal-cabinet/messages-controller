@@ -79,7 +79,7 @@ class UserManagementActor(out: ActorRef,
         content = msg.content,
         senderId = msg.userId))
       _ = msg.receivers
-        .map(uid => MessageReceivedEvent(uid, msg.content))
+        .map(uid => MessageReceivedEvent(userId = uid, message = messageResult))
         .foreach(event => ParticipantsStorage.publish(event, event.userId))
     } yield {
       println(s"Dialog result: ${""}")

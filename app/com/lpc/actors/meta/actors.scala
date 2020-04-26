@@ -1,5 +1,6 @@
 package com.lpc.actors.meta
 
+import com.lpc.services.models.DialogMessage
 import play.api.libs.json.JsValue
 
 package object actors {
@@ -40,6 +41,6 @@ package object actors {
 
   case class MessageReceivedEvent(
      userId: String,
-     message: String,
+     message: DialogMessage,
      eventType: String = "message-received") extends MessageEventOut
 }
