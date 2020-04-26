@@ -1,5 +1,7 @@
 package com.lpc.actors
 
+import java.time.LocalDateTime
+
 import akka.actor.{Actor, ActorRef, Props}
 import akka.util.Timeout
 import akka.pattern.pipe
@@ -75,7 +77,7 @@ class UserManagementActor(out: ActorRef,
       messageResult <- messagesService.insertOrUpdateMessage(DialogMessage(
         id = None,
         dialogId = dialog.id.get,
-        createdTs = None,
+        createdTs = Option(LocalDateTime.now()),
         content = msg.content,
         senderId = msg.userId))
       _ = msg.receivers
