@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 import play.api.libs.json.{Format, Json}
 
 package object models {
-  case class DialogMessage(id: Option[String], dialogId: String, createdTs: Option[LocalDateTime], content: String, senderId: String)
+  case class DialogMessage(id: Option[String], dialogId: String, createdTs: Option[LocalDateTime], content: String, senderId: String, isRead: Boolean)
   object DialogMessage {
     implicit val fmt: Format[DialogMessage] = Json.format
   }

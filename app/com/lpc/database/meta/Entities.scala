@@ -11,4 +11,5 @@ case class DialogMessageEntity(
   dialogId: String,
   createdTs: Option[Timestamp],
   content: String,
-  senderId: String)
+  senderId: String,
+  isRead: Boolean)

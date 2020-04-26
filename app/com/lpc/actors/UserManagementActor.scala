@@ -79,7 +79,8 @@ class UserManagementActor(out: ActorRef,
         dialogId = dialog.id.get,
         createdTs = Option(LocalDateTime.now()),
         content = msg.content,
-        senderId = msg.userId))
+        senderId = msg.userId,
+        isRead = msg.isRead))
       _ = msg.receivers
         .map(uid => MessageReceivedEvent(userId = uid, message = messageResult))
         .foreach(event => ParticipantsStorage.publish(event, event.userId))

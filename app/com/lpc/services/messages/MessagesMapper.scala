@@ -12,7 +12,8 @@ object MessagesMapper {
       id = entity.id,
       dialogId = entity.dialogId,
       createdTs = entity.createdTs.map(_.toLocalDateTime),
-      content = entity.content)
+      content = entity.content,
+      isRead = entity.isRead)
 
   def toEntity(dto: DialogMessage): DialogMessageEntity =
     DialogMessageEntity (
@@ -20,7 +21,8 @@ object MessagesMapper {
       id = dto.id,
       dialogId = dto.dialogId,
       createdTs = dto.createdTs.map(Timestamp.valueOf),
-      content = dto.content)
+      content = dto.content,
+      isRead = dto.isRead)
 
   def toDto(entity: DialogEntity): Dialog =
     Dialog (
