@@ -26,7 +26,8 @@ package object mappings {
     def createdTs = column[Option[Timestamp]]("created_ts")
     def content = column[String]("content")
     def senderId = column[String]("sender_id")
+    def isRead = column[Boolean]("is_read")
 
-    def * = (id, dialogId, createdTs, content, senderId) <> (DialogMessageEntity.tupled, DialogMessageEntity.unapply)
+    def * = (id, dialogId, createdTs, content, senderId, isRead) <> (DialogMessageEntity.tupled, DialogMessageEntity.unapply)
   }
 }
