@@ -30,6 +30,8 @@ package object actors {
      receivers: Seq[String],
      content: String) extends MessageEventIn
 
+  case class MetricsEventRequest(userId: String) extends MessageEventIn
+
   case class NotificationEvent(
     userId: String,
     content: String,
@@ -43,4 +45,9 @@ package object actors {
      userId: String,
      message: DialogMessage,
      eventType: String = "message-received") extends MessageEventOut
+
+  case class MetricsEvent(
+     userId: String,
+     unreadMessagesCount: Int,
+     eventType: String = "metrics-event") extends MessageEventOut
 }

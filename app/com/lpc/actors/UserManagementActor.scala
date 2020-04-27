@@ -4,9 +4,8 @@ import java.time.LocalDateTime
 
 import akka.actor.{Actor, ActorRef, Props}
 import akka.util.Timeout
-import akka.pattern.pipe
 import com.lpc.actors.meta.{RequestMapper, UsersEventBus}
-import com.lpc.actors.meta.actors.{JoinChannelEvent, MessageEventOut, MessageReceivedEvent, MessageSentEvent, NotificationEvent, SendMessageEvent, SendNotificationEvent, SocketRequest}
+import com.lpc.actors.meta.actors.{JoinChannelEvent, MessageEventOut, MessageReceivedEvent, MessageSentEvent, MetricsEvent, MetricsEventRequest, NotificationEvent, SendMessageEvent, SendNotificationEvent, SocketRequest}
 import com.lpc.services.messages.MessagesService
 import com.lpc.services.models.{Dialog, DialogMessage, DialogParticipant}
 
@@ -36,10 +35,12 @@ class UserManagementActor(out: ActorRef,
     case msg: NotificationEvent => fireMessage(msg)
     case msg: MessageSentEvent => fireMessage(msg)
     case msg: MessageReceivedEvent => fireMessage(msg)
+    case msg: MetricsEvent => fireMessage(msg)
 
     case msg: JoinChannelEvent => handleJoinChannelEvent(msg)
     case msg: SendNotificationEvent => handleSendNotificationEvent(msg)
     case msg: SendMessageEvent => Await.result(handleSendMessageEvent(msg), Duration.Inf)
+    case msg: MetricsEventRequest => Await.result(handleMetricsEventRequest(msg), Duration.Inf)
 
     case rawEvent: SocketRequest => RequestMapper.getEvent(rawEvent) match {
       case Some(event) =>
@@ -92,6 +93,14 @@ class UserManagementActor(out: ActorRef,
     }
 
     result.value
+  }
+
+  private def handleMetricsEventRequest(msg: MetricsEventRequest) = {
+    println(s"Handler metrics event request: ${msg}")
+
+    messagesService.getUnreadMessages(msg.userId)
+      .map(number => fireMessage(MetricsEvent(msg.userId, number)))
+      .value
   }
 
   private def fireMessage(event: MessageEventOut) = {

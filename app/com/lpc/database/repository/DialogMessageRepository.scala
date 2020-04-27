@@ -10,6 +10,8 @@ trait DialogMessageRepository {
   def upsert(entity: DialogMessageEntity): Future[DialogMessageEntity]
 
   def findById(dialogMessageId: String): Future[Option[DialogMessageEntity]]
+
+  def getUnreadMessagesCount(userId: String): Future[Int]
 }
 
 class DefaultDialogMessageRepository @Inject()(db: JdbcBackend#Database)(implicit ec: ExecutionContext)
@@ -19,7 +21,6 @@ class DefaultDialogMessageRepository @Inject()(db: JdbcBackend#Database)(implici
   import com.lpc.database.meta.Tables._
 
   override def upsert(entity: DialogMessageEntity): Future[DialogMessageEntity] = {
-    println(s"Entity: ${entity}")
     val query = DialogMessageTable
       .map(t => (t.content, t.dialogId, t.senderId, t.createdTs))
       .returning(DialogMessageTable.map(_.id))
@@ -32,5 +33,15 @@ class DefaultDialogMessageRepository @Inject()(db: JdbcBackend#Database)(implici
     val query = DialogMessageTable.filter(_.id === dialogMessageId).result
 
     db.run(query).map(_.headOption)
+  }
+
+  override def getUnreadMessagesCount(userId: String): Future[Int] = {
+    val query = DialogParticipantTable.filter(_.userId === userId)
+      .join(DialogMessageTable).on(_.dialogId === _.dialogId)
+      .filter { case (_, message) => (message.senderId =!= userId) && !message.isRead }
+      .map { case (_, message) => message }
+      .result
+
+    db.run(query).map(_.length)
   }
 }

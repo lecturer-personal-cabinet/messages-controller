@@ -1,6 +1,6 @@
 package com.lpc.actors.meta
 
-import com.lpc.actors.meta.actors.{JoinChannelEvent, MessageEventIn, SendMessageEvent, SendNotificationEvent, SocketRequest}
+import com.lpc.actors.meta.actors.{JoinChannelEvent, MessageEventIn, MetricsEventRequest, SendMessageEvent, SendNotificationEvent, SocketRequest}
 
 object RequestMapper {
   import ModelImplicits._
@@ -11,6 +11,7 @@ object RequestMapper {
       case "join-event" => inputEvent.data.validateOpt[JoinChannelEvent].asOpt.flatten
       case "send-notification-event" => inputEvent.data.validateOpt[SendNotificationEvent].asOpt.flatten
       case "send-message-event" => inputEvent.data.validateOpt[SendMessageEvent].asOpt.flatten
+      case "metrics-event-request" => inputEvent.data.validateOpt[MetricsEventRequest].asOpt.flatten
     }
   }
 }
