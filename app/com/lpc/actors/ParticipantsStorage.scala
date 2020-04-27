@@ -1,7 +1,7 @@
 package com.lpc.actors
 
 import akka.actor.ActorRef
-import com.lpc.actors.meta.actors.{MessageEventOut, NotificationEvent}
+import com.lpc.actors.meta.actors.{MessageEventOut}
 
 object ParticipantsStorage {
   private var Participants: Map[String, ActorRef] = Map.empty[String, ActorRef]

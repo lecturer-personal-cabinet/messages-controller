@@ -44,6 +44,7 @@ class UserManagementActor(out: ActorRef,
 
     case rawEvent: SocketRequest => RequestMapper.getEvent(rawEvent) match {
       case Some(event) =>
+        println(out)
         println(s"GOT EVENT: ${event}")
         self ! event
       case None => Unit
