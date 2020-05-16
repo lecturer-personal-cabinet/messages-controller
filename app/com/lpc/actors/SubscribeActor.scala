@@ -51,7 +51,9 @@ class SubscribeActor(redis: RedisClient,
     }
   }
 
-  def onPMessage(pmessage: PMessage): Unit = {}
+  def onPMessage(pmessage: PMessage): Unit = {
+    println("PMESSAGE: " + pmessage)
+  }
 
   private def handleMessageEvent(event: MessageEvent) = {
     messagesService

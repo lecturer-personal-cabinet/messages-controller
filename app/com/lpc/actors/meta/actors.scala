@@ -27,6 +27,8 @@ package object actors {
     implicit val fmt: Format[MessageEvent] = Json.format
   }
 
+  case class GetUnreadMessages(userId: String) extends MessageEventIn
+
   case class NotificationEvent(
     userId: String,
     content: String,
