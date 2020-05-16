@@ -1,1 +1,1 @@
-GET                 /                           com.lpc.controllers.DialogController.accept
+GET                 /:userId                           com.lpc.controllers.DialogController.accept(userId: String)

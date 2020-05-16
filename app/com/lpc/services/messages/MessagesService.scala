@@ -14,6 +14,7 @@ trait MessagesService {
   def findDialog(participants: Seq[String]): AsyncServiceResult[Dialog]
   def insertIfNotExistsDialogParticipants(dialogParticipant: Seq[DialogParticipant]): AsyncServiceResult[Seq[DialogParticipant]]
   def getUnreadMessages(userId: String): AsyncServiceResult[Int]
+  def getMessage(messageId: String): AsyncServiceResult[DialogMessage]
 }
 
 class DefaultMessagesService @Inject() (dialogMessageRepository: DialogMessageRepository,
@@ -66,4 +67,10 @@ class DefaultMessagesService @Inject() (dialogMessageRepository: DialogMessageRe
       .logInfo(e => s"[getUnreadMessages] Info: ${e}")
       .logFailure(err => s"[getUnreadMessages] Error: ${err}")
   }
+
+  override def getMessage(messageId: String): AsyncServiceResult[DialogMessage] =
+    dialogMessageRepository
+      .findById(messageId)
+      .orNotFound(NotFoundError())
+      .map(MessagesMapper.toDto)
 }

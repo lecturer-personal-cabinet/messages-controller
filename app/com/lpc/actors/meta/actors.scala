@@ -1,12 +1,10 @@
 package com.lpc.actors.meta
 
 import com.lpc.services.models.DialogMessage
-import play.api.libs.json.JsValue
+import play.api.libs.json.{Format, JsValue, Json}
 
 package object actors {
-  sealed trait MessageEventIn {
-    def userId: String
-  }
+  sealed trait MessageEventIn
 
   sealed trait MessageEventOut {
     def eventType: String
@@ -14,23 +12,20 @@ package object actors {
   }
 
   case class SocketRequest(
-    userId: String,
     data: JsValue,
     eventType: String)
+  object SocketRequest {
+    implicit val fmt: Format[SocketRequest] = Json.format
+  }
 
-  case class JoinChannelEvent(userId: String) extends MessageEventIn
-
-  case class SendNotificationEvent(
-    userId: String,
-    receivers: Seq[String],
-    content: String) extends MessageEventIn
-
-  case class SendMessageEvent(
-     userId: String,
-     receivers: Seq[String],
-     content: String) extends MessageEventIn
-
-  case class MetricsEventRequest(userId: String) extends MessageEventIn
+  case class MessageEvent(
+     receiverId: String,
+     senderId: String,
+     messageId: String,
+     dialogId: String) extends MessageEventIn
+  object MessageEvent {
+    implicit val fmt: Format[MessageEvent] = Json.format
+  }
 
   case class NotificationEvent(
     userId: String,
