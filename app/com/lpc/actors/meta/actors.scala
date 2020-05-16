@@ -28,6 +28,9 @@ package object actors {
   }
 
   case class GetUnreadMessages(userId: String) extends MessageEventIn
+  object GetUnreadMessages {
+    implicit val fmt: Format[GetUnreadMessages] = Json.format
+  }
 
   case class NotificationEvent(
     userId: String,
@@ -47,4 +50,9 @@ package object actors {
      userId: String,
      unreadMessagesCount: Int,
      eventType: String = "metrics-event") extends MessageEventOut
+
+  case class MetricsEventRequest(userId: String) extends MessageEventIn
+  object MetricsEventRequest {
+    implicit val fmt: Format[MetricsEventRequest] = Json.format
+  }
 }

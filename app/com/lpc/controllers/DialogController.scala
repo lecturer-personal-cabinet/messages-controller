@@ -25,6 +25,7 @@ class DialogController @Inject()(cc: ControllerComponents, messagesService: Mess
   def accept(userId: String): WebSocket = WebSocket.accept[SocketRequest, MessageEventOut] { _ =>
     ActorFlow.actorRef { out =>
       SubscribeActor.props(Redis, out, messagesService, userId)
+//      UserManagementActor.props(out, messagesService)
     }
   }
 }

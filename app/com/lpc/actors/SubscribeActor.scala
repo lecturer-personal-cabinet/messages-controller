@@ -4,7 +4,7 @@ import java.net.InetSocketAddress
 
 import akka.actor.{ActorRef, Props}
 import com.lpc.actors.meta.RequestMapper
-import com.lpc.actors.meta.actors.{MessageEvent, MessageReceivedEvent, SocketRequest}
+import com.lpc.actors.meta.actors.{MessageEvent, MessageEventOut, MessageReceivedEvent, MetricsEvent, MetricsEventRequest, SocketRequest}
 import com.lpc.services.messages.MessagesService
 import com.lpc.services.models.DialogMessage
 import play.api.libs.json.Json
@@ -12,7 +12,8 @@ import redis.RedisClient
 import redis.actors.RedisSubscriberActor
 import redis.api.pubsub.{Message, PMessage}
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext, Future}
 
 object SubscribeActor {
   def props(redis: RedisClient,
@@ -30,12 +31,31 @@ class SubscribeActor(redis: RedisClient,
                      channels: Seq[String] = Nil,
                      patterns: Seq[String] = Nil) extends RedisSubscriberActor(
   new InetSocketAddress(redis.host, redis.port), channels, patterns,
-  onConnectStatus = connected => {println(s"connected: $connected")}) {
+  onConnectStatus = connected => {
+    import cats.instances.future._
+    import scala.concurrent.ExecutionContext.Implicits.global
+
+    def handleMetricsEventRequest(msg: MetricsEventRequest) = {
+      println(s"Handler metrics event request: ${msg}")
+
+      messagesService.getUnreadMessages(msg.userId)
+        .map(number => fireMessage(MetricsEvent(msg.userId, number)))
+        .value
+    }
+
+     def fireMessage(event: MessageEventOut): Unit = {
+      println(s"Fire message request: $event")
+      out ! event
+    }
+
+    Await.result(handleMetricsEventRequest(MetricsEventRequest(channels.head)), Duration.Inf)
+  }) {
 
   import cats.instances.future._
   import scala.concurrent.ExecutionContext.Implicits.global
 
   def onMessage(message: Message) {
+    println("MESSAGE")
     println(message.data.decodeString("UTF-8"))
     Json.parse(message.data.decodeString("UTF-8")).validateOpt[SocketRequest].asOpt.flatten match {
       case Some(value) =>
